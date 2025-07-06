@@ -1,31 +1,37 @@
 import { useState, useEffect } from "react";
-import { supabase } from "../lib/supabase";
-import Auth from "../components/Auth";
-import Account from "../components/Account";
-import { View } from "react-native";
-import { Session } from "@supabase/supabase-js";
-import React from "react";
+import { View, Text } from "react-native";
+import * as Location from "expo-location";
 
 export default function App() {
-  const [session, setSession] = useState<Session | null>(null);
-
+  const [location, setLocation] = useState<Location.LocationObject | null>(
+    null
+  );
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
+    async function getCurrentLocation() {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
 
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    }
+
+    getCurrentLocation();
   }, []);
 
+  let text = "Waiting...";
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
+
   return (
-    <View>
-      {session && session.user ? (
-        <Account key={session.user.id} session={session} />
-      ) : (
-        <Auth />
-      )}
+    <View className="bg-red-300">
+      <Text>{text}</Text>
     </View>
   );
 }

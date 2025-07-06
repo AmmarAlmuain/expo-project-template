@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "falafel-abu-saif",
-    "slug": "falafel-abu-saif",
+    "name": "expo-project-template",
+    "slug": "expo-project-template",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -28,7 +28,13 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
     ]
   }
 }

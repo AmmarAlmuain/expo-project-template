@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { View, Text } from "react-native";
+import React, { View, Text, Platform } from "react-native";
 import * as Location from "expo-location";
+import { GoogleMaps, AppleMaps } from "expo-maps";
 
 export default function App() {
   const [location, setLocation] = useState<Location.LocationObject | null>(
@@ -28,10 +29,17 @@ export default function App() {
   } else if (location) {
     text = JSON.stringify(location);
   }
-
-  return (
-    <View className="bg-red-300">
-      <Text>{text}</Text>
-    </View>
-  );
+  if (Platform.OS === "ios") {
+    return <AppleMaps.View style={{ flex: 1 }} />;
+  } else if (Platform.OS === "android") {
+    return <GoogleMaps.View style={{ flex: 1 }} />;
+  } else {
+    return <Text>Maps are only available on Android and iOS</Text>;
+  }
+  // return (
+  //   <View className="bg-red-300">
+  //     <Text>{text}</Text>
+  //     <GoogleMaps.View style={{ flex: 1 }} />
+  //   </View>
+  // );
 }
